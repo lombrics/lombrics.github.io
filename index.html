@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Lombrics !</title>
+  <meta name="description" content="Jeu d'artillerie de vers de terre complètement timbrés, en multijoueur pair-à-pair dans le navigateur.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪱</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- MENU -->
+  <section id="menu" class="screen">
+    <div class="menu-bg" aria-hidden="true">
+      <span>🥖</span><span>🐔</span><span>🍉</span><span>🧀</span><span>🎹</span><span>🧦</span><span>🐌</span><span>🪩</span>
+    </div>
+    <h1 class="logo">Lombrics<span class="bang">!</span></h1>
+    <p class="tagline">L'artillerie des vers de terre complètement timbrés</p>
+
+    <div class="card">
+      <label class="field">Ton nom de lombric
+        <input id="name" maxlength="14" placeholder="Tonton Ver" autocomplete="off">
+      </label>
+      <label class="field small">Lombrics par équipe
+        <select id="perTeam"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+      </label>
+
+      <div id="joinBox" class="join-box hidden">
+        <p>🎟️ Tu as été invité à la partie <b id="joinCodeShow"></b> !</p>
+        <button id="btnJoinInvite" class="btn big b-blue">🔗 Rejoindre la partie</button>
+      </div>
+
+      <button id="btnOnline" class="btn big b-green">🌐 Créer une partie en ligne</button>
+      <div class="row">
+        <input id="joinCode" class="code-input" maxlength="5" placeholder="CODE" autocomplete="off">
+        <button id="btnJoin" class="btn b-blue">🔗 Rejoindre</button>
+      </div>
+      <div class="sep"><span>ou</span></div>
+      <div class="row">
+        <select id="localTeams" aria-label="Nombre d'équipes"><option value="2">2 équipes</option><option value="3">3 équipes</option><option value="4">4 équipes</option></select>
+        <button id="btnLocal" class="btn b-orange">🎮 Partie locale</button>
+      </div>
+      <p id="menuError" class="error"></p>
+    </div>
+    <button class="link" id="btnHelpMenu">❓ Comment on joue ?</button>
+  </section>
+
+  <!-- SALON -->
+  <section id="lobby" class="screen hidden">
+    <div class="card">
+      <h2>Le salon des lombrics</h2>
+      <p id="lobbyStatus" class="status">Connexion…</p>
+      <div id="inviteBox" class="hidden">
+        <p>Code de la partie :</p>
+        <div class="code" id="codeShow">-----</div>
+        <div class="row">
+          <input id="inviteLink" readonly>
+          <button id="btnCopy" class="btn b-yellow">📋 Copier</button>
+        </div>
+        <button id="btnShare" class="btn b-purple hidden">📤 Partager l'invitation</button>
+        <p class="note">Envoie ce lien à tes amis (4 joueurs max). Connexion directe en pair-à-pair, sans serveur de jeu.</p>
+      </div>
+      <ul id="players"></ul>
+      <button id="btnStart" class="btn big b-green hidden">🚀 Lancer la partie</button>
+      <button id="btnLeave" class="btn b-grey">↩ Quitter</button>
+    </div>
+  </section>
+
+  <!-- JEU -->
+  <section id="game" class="hidden">
+    <canvas id="cv"></canvas>
+    <button id="btnWeapons" class="hud-btn weapon-btn" title="Armes (Tab / clic droit)"><span id="wIcon">🥖</span><span id="wName">Lance-Baguette</span><span id="wAmmo"></span></button>
+    <div class="hud-tr">
+      <button id="btnMute" class="hud-btn round" title="Son">🔊</button>
+      <button id="btnHelp" class="hud-btn round" title="Aide">❓</button>
+      <button id="btnQuit" class="hud-btn round" title="Quitter">🚪</button>
+    </div>
+    <div id="weaponPanel" class="panel hidden"></div>
+
+    <div id="touch" class="hidden">
+      <div class="pad left">
+        <button data-k="u">▲</button>
+        <div><button data-k="l">◀</button><button data-k="d">▼</button><button data-k="r">▶</button></div>
+      </div>
+      <div class="pad right">
+        <button data-k="bjump" class="small">↶</button>
+        <button data-k="jump">⤴</button>
+        <button data-k="fire" class="fire">🔥</button>
+      </div>
+    </div>
+
+    <div id="overlay" class="hidden">
+      <div class="card">
+        <h2 id="overTitle">Victoire !</h2>
+        <p id="overSub"></p>
+        <button id="btnAgain" class="btn big b-green">🔁 Rejouer</button>
+        <button id="btnMenu" class="btn b-grey">🏠 Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- AIDE -->
+  <div id="helpPanel" class="modal hidden">
+    <div class="card">
+      <h2>Comment on joue ?</h2>
+      <ul class="keys">
+        <li><kbd>←</kbd><kbd>→</kbd> ou <kbd>Q</kbd><kbd>D</kbd> : ramper</li>
+        <li><kbd>↑</kbd><kbd>↓</kbd> ou <kbd>Z</kbd><kbd>S</kbd> : viser</li>
+        <li><kbd>Espace</kbd> : maintenir pour charger, relâcher pour tirer</li>
+        <li><kbd>Entrée</kbd> : sauter · <kbd>Retour</kbd> : salto arrière</li>
+        <li><kbd>Tab</kbd> ou clic droit : choisir une arme</li>
+        <li>Clic : cibler (chaussettes, piano, téléporteur, escargot)</li>
+        <li>Glisser : déplacer la caméra · Molette : zoom</li>
+      </ul>
+      <p>Chacun son tour : 45 secondes pour viser et tirer, puis 4 secondes pour fuir ! Le vent dévie les projectiles légers. Tombe à l'eau et c'est fini.</p>
+      <button id="btnHelpClose" class="btn b-green">C'est parti !</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/terrain.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/net.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
