@@ -4,9 +4,9 @@ Jeu d'artillerie au tour par tour dans le navigateur : des équipes de vers de t
 
 ## Jouer en ligne
 
-👉 **https://lombrics.github.io/lombrics/**
+👉 **https://lombrics.github.io**
 
-Le site est publié automatiquement sur GitHub Pages à chaque push (workflow `.github/workflows/pages.yml`). Si la page n'apparaît pas après le premier push, active Pages une fois pour toutes : *Settings → Pages → Build and deployment → Source : GitHub Actions*, puis relance le workflow depuis l'onglet *Actions*.
+Le site est publié automatiquement sur GitHub Pages à chaque push (workflow `.github/workflows/pages.yml`). Pour que l'adresse soit `https://lombrics.github.io` (sans sous-dossier), le dépôt doit s'appeler `lombrics.github.io`. Pages s'active une seule fois : *Settings → Pages → Build and deployment → Source : GitHub Actions*.
 
 ## Jouer en local
 
