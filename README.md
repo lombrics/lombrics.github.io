@@ -2,7 +2,13 @@
 
 Jeu d'artillerie au tour par tour dans le navigateur : des équipes de vers de terre cartoon s'affrontent sur un terrain destructible avec un arsenal complètement délirant. Multijoueur en **pair-à-pair** grâce à [PeerJS](https://peerjs.com/), sans serveur de jeu.
 
-## Jouer
+## Jouer en ligne
+
+👉 **https://lombrics.github.io/lombrics/**
+
+Le site est publié automatiquement sur GitHub Pages à chaque push (workflow `.github/workflows/pages.yml`). Si la page n'apparaît pas après le premier push, active Pages une fois pour toutes : *Settings → Pages → Build and deployment → Source : GitHub Actions*, puis relance le workflow depuis l'onglet *Actions*.
+
+## Jouer en local
 
 C'est un site 100 % statique : il suffit de le servir en HTTP.
 
